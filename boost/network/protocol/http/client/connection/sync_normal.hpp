@@ -36,7 +36,7 @@ namespace boost { namespace network { namespace http { namespace impl {
         void send_request_impl(string_type const & method, basic_request<Tag> const & request_) {
             boost::asio::streambuf request_buffer;
             linearize(request_, method, version_major, version_minor, 
-                std::ostreambuf_iterator<typename char_<Tag>::type>(&request_buffer));
+                std::ostreambuf_iterator<typename char_<Tag>::type>(&request_buffer), true);
             connection_base::send_request_impl(socket_, method, request_buffer);
         }
 

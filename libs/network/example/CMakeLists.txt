@@ -15,10 +15,12 @@ add_executable(rss_reader rss/rss.cpp rss/main.cpp)
 add_executable(twitter_search twitter/search.cpp)
 add_executable(hello_world_server http/hello_world_server.cpp)
 add_executable(hello_world_client http/hello_world_client.cpp)
+add_executable(proxy proxy.cpp)
 if (UNIX)
   add_executable(fileserver http/fileserver.cpp)
 endif (UNIX)
 add_dependencies(http_client cppnetlib-uri cppnetlib-client-connections)
+add_dependencies(proxy cppnetlib-uri cppnetlib-client-connections)
 add_dependencies(simple_wget cppnetlib-uri cppnetlib-client-connections)
 add_dependencies(atom_reader cppnetlib-uri cppnetlib-client-connections)
 add_dependencies(rss_reader cppnetlib-uri cppnetlib-client-connections)
@@ -76,6 +78,13 @@ target_link_libraries(hello_world_client
     cppnetlib-uri
     cppnetlib-client-connections)
 
+target_link_libraries(proxy
+    ${BOOST_CLIENT_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+    cppnetlib-uri
+    cppnetlib-client-connections)
+
+
 if (OPENSSL_FOUND)
   target_link_libraries(http_client ${OPENSSL_LIBRARIES})
   target_link_libraries(simple_wget ${OPENSSL_LIBRARIES})
@@ -84,6 +93,7 @@ if (OPENSSL_FOUND)
   target_link_libraries(twitter_search ${OPENSSL_LIBRARIES})
   target_link_libraries(hello_world_server ${OPENSSL_LIBRARIES})
   target_link_libraries(hello_world_client ${OPENSSL_LIBRARIES})
+  target_link_libraries(proxy ${OPENSSL_LIBRARIES})
 endif (OPENSSL_FOUND)
 
 if (UNIX)
@@ -101,6 +111,7 @@ set_target_properties(rss_reader PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLI
 set_target_properties(twitter_search PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
 set_target_properties(hello_world_server PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
 set_target_properties(hello_world_client PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
+set_target_properties(proxy PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
 if (UNIX)
   set_target_properties(fileserver PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/example)
 endif (UNIX)

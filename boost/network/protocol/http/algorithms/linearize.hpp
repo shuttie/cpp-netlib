@@ -54,7 +54,8 @@ namespace boost { namespace network { namespace http {
         typename Request::string_type const & method,
         unsigned version_major,
         unsigned version_minor,
-        OutputIterator oi
+        OutputIterator oi,
+        bool using_proxy = false
         )
     {
         typedef typename Request::tag Tag;
@@ -73,6 +74,13 @@ namespace boost { namespace network { namespace http {
             ;
         boost::copy(method, oi);
         *oi = consts::space_char();
+        if (using_proxy) {
+            boost::copy(request.protocol(), oi);
+            *oi = consts::colon_char();
+            *oi = consts::slash_char();
+            *oi = consts::slash_char();
+            boost::copy(request.host(), oi);
+        }
         if (request.path().empty() || request.path()[0] != consts::slash_char())
             *oi = consts::slash_char();
         boost::copy(request.path(), oi);

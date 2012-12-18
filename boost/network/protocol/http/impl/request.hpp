@@ -11,6 +11,8 @@
 #include <boost/network/protocol/http/message.hpp>
 #include <boost/network/protocol/http/message/header.hpp>
 
+#include <boost/network/protocol/http/proxy.hpp>
+
 #include <boost/fusion/container/map.hpp>
 #include <boost/fusion/sequence/intrinsic/at_key.hpp>
 #include <boost/fusion/sequence/intrinsic/value_at_key.hpp>
@@ -53,6 +55,7 @@ namespace http {
 
         mutable boost::network::uri::uri uri_;
         typedef basic_message<Tag> base_type;
+
 
     public:
         typedef typename sync_only<Tag>::type tag;

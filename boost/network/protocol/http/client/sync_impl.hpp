@@ -6,6 +6,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/network/protocol/http/proxy.hpp>
+
 namespace boost { namespace network { namespace http {
 
     template <class Tag, unsigned version_major, unsigned version_minor>
@@ -26,10 +28,12 @@ namespace boost { namespace network { namespace http {
             boost::asio::io_service & service_;
             resolver_type resolver_;
             optional<string_type> certificate_file, verify_path;
+            optional<proxy_type> proxy_;
 
             sync_client(bool cache_resolved, bool follow_redirect
                 , optional<string_type> const & certificate_file = optional<string_type>()
                 , optional<string_type> const & verify_path = optional<string_type>()
+                , optional<proxy_type> const & proxy = optional<proxy_type>()
             )
                 : connection_base(cache_resolved, follow_redirect),
                 service_ptr(new boost::asio::io_service),
@@ -37,11 +41,13 @@ namespace boost { namespace network { namespace http {
                 resolver_(service_)
                 , certificate_file(certificate_file)
                 , verify_path(verify_path)
+                , proxy_(proxy)
             {}
 
             sync_client(bool cache_resolved, bool follow_redirect, boost::asio::io_service & service
                 , optional<string_type> const & certificate_file = optional<string_type>()
                 , optional<string_type> const & verify_path = optional<string_type>()
+                , optional<proxy_type> const & proxy = optional<proxy_type>()
             )
                 : connection_base(cache_resolved, follow_redirect),
                 service_ptr(0),
@@ -49,6 +55,7 @@ namespace boost { namespace network { namespace http {
                 resolver_(service_)
                 , certificate_file(certificate_file)
                 , verify_path(verify_path)
+                , proxy_(proxy)
             {}
 
             ~sync_client() {
@@ -58,8 +65,8 @@ namespace boost { namespace network { namespace http {
 
             basic_response<Tag> const request_skeleton(basic_request<Tag> const & request_, string_type method, bool get_body, body_callback_function_type callback) {
                 typename connection_base::connection_ptr connection_;
-                connection_ = connection_base::get_connection(resolver_, request_, certificate_file, verify_path);
-                return connection_->send_request(method, request_, get_body, callback);
+                connection_ = connection_base::get_connection(resolver_, request_, certificate_file, verify_path, proxy_);
+                return connection_->send_request(method, request_, get_body, callback, proxy_);
             }
 
         };

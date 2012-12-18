@@ -39,10 +39,11 @@ namespace boost { namespace network { namespace http {
                 resolver_type & resolver,
                 bool https,
                 optional<string_type> const & certificate_filename,
-                optional<string_type> const & verify_path
+                optional<string_type> const & verify_path,
+                optional<proxy_type> const & proxy
                 )
             {
-                pimpl = impl::async_connection_base<Tag,version_major,version_minor>::new_connection(resolve, resolver, follow_redirect, https, certificate_filename, verify_path);
+                pimpl = impl::async_connection_base<Tag,version_major,version_minor>::new_connection(resolve, resolver, follow_redirect, https, certificate_filename, verify_path, proxy);
             }
 
             basic_response<Tag> send_request(string_type const & method, basic_request<Tag> const & request_, bool get_body, body_callback_function_type callback) {
@@ -56,7 +57,11 @@ namespace boost { namespace network { namespace http {
         };
 
         typedef boost::shared_ptr<connection_impl> connection_ptr;
-        connection_ptr get_connection(resolver_type & resolver, basic_request<Tag> const & request_, optional<string_type> const & certificate_filename = optional<string_type>(), optional<string_type> const & verify_path = optional<string_type>()) {
+        connection_ptr get_connection(resolver_type & resolver, basic_request<Tag> const & request_,
+                                      optional<string_type> const & certificate_filename = optional<string_type>(),
+                                      optional<string_type> const & verify_path = optional<string_type>(),
+                                      optional<proxy_type> const & proxy = optional<proxy_type>())
+        {
             string_type protocol_ = protocol(request_);
             connection_ptr connection_(
                 new connection_impl(
@@ -76,7 +81,7 @@ namespace boost { namespace network { namespace http {
         void cleanup() { }
 
         async_connection_policy(bool cache_resolved, bool follow_redirect)
-            : resolver_base(cache_resolved), follow_redirect_(follow_redirect) {}
+            : resolver_base(cache_resolved), follow_redirect_(follow_redirect){}
 
         bool follow_redirect_;
     };

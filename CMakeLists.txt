@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 2.8)
 project(CPP-NETLIB)
-set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTI_THREADED ON)
 find_package( Boost 1.45.0 REQUIRED unit_test_framework system regex date_time thread filesystem program_options )
 find_package( OpenSSL )
@@ -37,4 +37,19 @@ if (Boost_FOUND)
     add_subdirectory(libs/network/example)
 endif(Boost_FOUND)
 
+
 enable_testing()
+
+if(CPP-NETLIB_BUILD_TESTS)
+  enable_testing()
+endif()
+
+message(STATUS "CPP-NETLIB Options selected:")
+message(STATUS "  CPP-NETLIB_BUILD_SHARED_LIBS: ${CPP-NETLIB_BUILD_SHARED_LIBS}\t(Build cpp-netlib as shared libraries: OFF, ON)")
+message(STATUS "  CPP-NETLIB_BUILD_TESTS:       ${CPP-NETLIB_BUILD_TESTS}\t(Build the unit tests: ON, OFF)")
+message(STATUS "  CPP-NETLIB_BUILD_EXAMPLES:    ${CPP-NETLIB_BUILD_EXAMPLES}\t(Build the examples using cpp-netlib: ON, OFF)")
+message(STATUS "  CPP-NETLIB_ALWAYS_LOGGING:    ${CPP-NETLIB_ALWAYS_LOGGING}\t(Allow cpp-netlib to log debug messages even in non-debug mode: ON, OFF)")
+message(STATUS "  CPP-NETLIB_DISABLE_LOGGING:   ${CPP-NETLIB_DISABLE_LOGGING}\t(Disable logging definitely, no logging code will be generated or compiled: ON, OFF)")
+
+set(CPP-NETLIB_HEADERS include/network.hpp)
+

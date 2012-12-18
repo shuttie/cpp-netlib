@@ -149,6 +149,7 @@ namespace boost { namespace network { namespace http {
                     , args[_follow_redirects|false]
                     , optional<string_type>(args[_openssl_certificate|optional<string_type>()])
                     , optional<string_type>(args[_openssl_verify_path|optional<string_type>()])
+                    , optional<proxy_type>(args[_proxy|optional<proxy_type>()])
                     )
                 );
         }
@@ -162,6 +163,7 @@ namespace boost { namespace network { namespace http {
                     , args[_io_service]
                     , optional<string_type>(args[_openssl_certificate|optional<string_type>()])
                     , optional<string_type>(args[_openssl_verify_path|optional<string_type>()])
+                    , optional<proxy_type>(args[_proxy|optional<proxy_type>()])
                     )
                 );
         }

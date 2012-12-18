@@ -37,10 +37,20 @@ namespace boost { namespace network { namespace http {
                 pimpl.reset(impl::sync_connection_base<Tag,version_major,version_minor>::new_connection(resolver, resolve, https, certificate_filename, verify_path));
             }
 
-            basic_response<Tag> send_request(string_type const & method, basic_request<Tag> request_, bool get_body, body_callback_function_type callback) {
+            basic_response<Tag> send_request(string_type const & method, basic_request<Tag> request_, bool get_body, body_callback_function_type callback, optional<proxy_type> proxy = optional<proxy_type>()) {
                 basic_response<Tag> response_;
                 do {
-                    pimpl->init_socket(request_.host(), lexical_cast<string_type>(request_.port()));
+                    std::string host;
+                    std::string port;
+                    if (proxy) {
+                        host = proxy->host();
+                        port = lexical_cast<string_type>(proxy->port());
+                    } else {
+                        host = request_.host();
+                        port = lexical_cast<string_type>(request_.port());
+                    }
+
+                    pimpl->init_socket(host, port);
                     pimpl->send_request_impl(method, request_);
 
                     response_ = basic_response<Tag>();
@@ -76,13 +86,23 @@ namespace boost { namespace network { namespace http {
         connection_ptr get_connection(resolver_type & resolver, basic_request<Tag> const & request_
             , optional<string_type> const & certificate_file = optional<string_type>()
             , optional<string_type> const & verify_file = optional<string_type>()
+            , optional<proxy_type> const & proxy = optional<proxy_type>()
         ) {
+            std::string host;
+            std::string port;
+            if (proxy) {
+                host = proxy->host();
+                port = lexical_cast<string_type>(proxy->port());
+            } else {
+                host = request_.host();
+                port = lexical_cast<string_type>(request_.port());
+            }
             connection_ptr connection_(
                 new connection_impl(
                     resolver
                     , follow_redirect_
-                    , request_.host()
-                    , lexical_cast<string_type>(request_.port())
+                    , host
+                    , port
                     , boost::bind(
                         &simple_connection_policy<Tag,version_major,version_minor>::resolve,
                         this,
@@ -99,11 +119,10 @@ namespace boost { namespace network { namespace http {
         void cleanup() { }
 
         simple_connection_policy(bool cache_resolved, bool follow_redirect)
-        : resolver_base(cache_resolved), follow_redirect_(follow_redirect) {}
+            : resolver_base(cache_resolved), follow_redirect_(follow_redirect){}
 
         // member variables
         bool follow_redirect_;
-
     };
 
 } // namespace http

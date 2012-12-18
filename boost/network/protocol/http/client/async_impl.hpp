@@ -12,6 +12,7 @@
 #include <boost/asio/strand.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
+#include <boost/network/protocol/http/proxy.hpp>
 
 namespace boost { namespace network { namespace http {
 
@@ -37,14 +38,15 @@ namespace boost { namespace network { namespace http {
         function<void(boost::iterator_range<char const *> const &, system::error_code const &)>
         body_callback_function_type;
 
-      async_client(bool cache_resolved, bool follow_redirect, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path)
+      async_client(bool cache_resolved, bool follow_redirect, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path, optional<proxy_type> const & proxy = optional<proxy_type>())
         : connection_base(cache_resolved, follow_redirect),
         service_ptr(new boost::asio::io_service),
         service_(*service_ptr),
         resolver_(service_),
         sentinel_(new boost::asio::io_service::work(service_)),
         certificate_filename_(certificate_filename),
-        verify_path_(verify_path)
+        verify_path_(verify_path),
+        proxy_(proxy)
       {
         connection_base::resolver_strand_.reset(new
           boost::asio::io_service::strand(service_));
@@ -55,14 +57,15 @@ namespace boost { namespace network { namespace http {
             )));
       }
 
-      async_client(bool cache_resolved, bool follow_redirect, boost::asio::io_service & service, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path)
+      async_client(bool cache_resolved, bool follow_redirect, boost::asio::io_service & service, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path, optional<proxy_type> const & proxy = optional<proxy_type>())
         : connection_base(cache_resolved, follow_redirect),
         service_ptr(0),
         service_(service),
         resolver_(service_),
         sentinel_(new boost::asio::io_service::work(service_)),
         certificate_filename_(certificate_filename),
-        verify_path_(verify_path)
+        verify_path_(verify_path),
+        proxy_(proxy)
       {
       }
 
@@ -94,6 +97,7 @@ namespace boost { namespace network { namespace http {
       boost::shared_ptr<boost::asio::io_service::work> sentinel_;
       boost::shared_ptr<boost::thread> lifetime_thread_;
       optional<string_type> certificate_filename_, verify_path_;
+      optional<proxy_type> proxy_;
     };
   } // namespace impl
 
