@@ -67,7 +67,9 @@ namespace boost { namespace network { namespace http {
         verify_path_(verify_path),
         proxy_(proxy)
       {
-      }
+         connection_base::resolver_strand_.reset(new
+    	            boost::asio::io_service::strand(service_));
+     }
 
       ~async_client() throw ()
       {
