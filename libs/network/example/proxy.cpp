@@ -29,7 +29,7 @@ main(int argc, char *argv[]) {
     try {
         int port = boost::lexical_cast<int>(argv[2]);
         /*<< Creates the client. >>*/
-        http_client client(http::_follow_redirects=true, http::_proxy=http::proxy_type(argv[1], port));
+        http_client client(http::_follow_redirects=true/*, http::_proxy=http::proxy_type(argv[1], port)*/);
         /*<< Creates a request using a URI supplied on the command
              line. >>*/
         http_client::request request(argv[3]);

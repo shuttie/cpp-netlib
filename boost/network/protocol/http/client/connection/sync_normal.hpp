@@ -33,10 +33,10 @@ namespace boost { namespace network { namespace http { namespace impl {
             connection_base::init_socket(socket_, resolver_, hostname, port, resolve_);
         }
 
-        void send_request_impl(string_type const & method, basic_request<Tag> const & request_) {
+        void send_request_impl(string_type const & method, basic_request<Tag> const & request_, optional<proxy_type> const & proxy = optional<proxy_type>()) {
             boost::asio::streambuf request_buffer;
             linearize(request_, method, version_major, version_minor, 
-                std::ostreambuf_iterator<typename char_<Tag>::type>(&request_buffer), true);
+                std::ostreambuf_iterator<typename char_<Tag>::type>(&request_buffer), proxy);
             connection_base::send_request_impl(socket_, method, request_buffer);
         }
 

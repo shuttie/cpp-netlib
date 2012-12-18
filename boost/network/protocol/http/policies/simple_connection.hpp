@@ -51,7 +51,7 @@ namespace boost { namespace network { namespace http {
                     }
 
                     pimpl->init_socket(host, port);
-                    pimpl->send_request_impl(method, request_);
+                    pimpl->send_request_impl(method, request_, proxy);
 
                     response_ = basic_response<Tag>();
                     response_ << network::source(request_.host());

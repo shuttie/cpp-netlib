@@ -223,7 +223,7 @@ namespace boost { namespace network { namespace http { namespace impl {
         }
 
         virtual void init_socket(string_type const & hostname, string_type const & port) = 0;
-        virtual void send_request_impl(string_type const & method, basic_request<Tag> const & request_) = 0;
+        virtual void send_request_impl(string_type const & method, basic_request<Tag> const & request_, optional<proxy_type> const & proxy = optional<proxy_type>()) = 0;
         virtual void read_status(basic_response<Tag> & response_, boost::asio::streambuf & response_buffer) = 0;
         virtual void read_headers(basic_response<Tag> & response_, boost::asio::streambuf & response_buffer) = 0;
         virtual void read_body(basic_response<Tag> & response_, boost::asio::streambuf & response_buffer) = 0;
