@@ -14,8 +14,8 @@
 #include <boost/asio/buffer.hpp>
 #include <boost/network/protocol/http/client/connection/normal_delegate.hpp>
 
-boost::network::http::impl::normal_delegate::normal_delegate(asio::io_service & service)
-  : service_(service)
+boost::network::http::impl::normal_delegate::normal_delegate(asio::io_service & service, optional<proxy_type> const & proxy)
+  : service_(service), proxy_(proxy)
 {}
 
 void boost::network::http::impl::normal_delegate::connect(

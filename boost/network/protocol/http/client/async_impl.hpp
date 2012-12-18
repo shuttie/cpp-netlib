@@ -90,7 +90,7 @@ namespace boost { namespace network { namespace http {
       {
         typename connection_base::connection_ptr connection_;
         connection_ = connection_base::get_connection(resolver_, request_, certificate_filename_, verify_path_);
-        return connection_->send_request(method, request_, get_body, callback);
+        return connection_->send_request(method, request_, get_body, callback, proxy_);
       }
 
       boost::asio::io_service * service_ptr;

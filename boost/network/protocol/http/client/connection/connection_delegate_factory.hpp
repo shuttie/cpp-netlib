@@ -31,18 +31,20 @@ struct connection_delegate_factory {
       asio::io_service & service,
       bool https,
       optional<string_type> certificate_filename,
-      optional<string_type> verify_path) {
+      optional<string_type> verify_path,
+      optional<proxy_type> proxy) {
     connection_delegate_ptr delegate;
     if (https) {
 #ifdef BOOST_NETWORK_ENABLE_HTTPS
       delegate.reset(new ssl_delegate(service,
                                       certificate_filename,
-                                      verify_path));
+                                      verify_path,
+                                      proxy));
 #else
       BOOST_THROW_EXCEPTION(std::runtime_error("HTTPS not supported."));
 #endif /* BOOST_NETWORK_ENABLE_HTTPS */
     } else {
-      delegate.reset(new normal_delegate(service));
+      delegate.reset(new normal_delegate(service, proxy));
     }
     return delegate;
   }

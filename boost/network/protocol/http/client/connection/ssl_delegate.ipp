@@ -12,10 +12,12 @@
 
 boost::network::http::impl::ssl_delegate::ssl_delegate(asio::io_service & service,
                                          optional<std::string> certificate_filename,
-                                         optional<std::string> verify_path) :
+                                         optional<std::string> verify_path,
+                                         optional<proxy_type> const & proxy) :
   service_(service),
   certificate_filename_(certificate_filename),
-  verify_path_(verify_path) {}
+  verify_path_(verify_path),
+  proxy_(proxy) {}
 
 void boost::network::http::impl::ssl_delegate::connect(
     asio::ip::tcp::endpoint & endpoint,

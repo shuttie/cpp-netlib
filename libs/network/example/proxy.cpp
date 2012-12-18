@@ -17,8 +17,7 @@
 
 
 namespace http = boost::network::http;
-typedef http::basic_client<http::tags::http_default_8bit_tcp_resolve, 1, 1> http_client;
-
+typedef http::basic_client<http::tags::http_async_8bit_tcp_resolve, 1, 1> http_client;
 int
 main(int argc, char *argv[]) {
     

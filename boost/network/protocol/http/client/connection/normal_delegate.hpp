@@ -14,7 +14,7 @@
 namespace boost { namespace network { namespace http { namespace impl {
 
 struct normal_delegate : connection_delegate {
-  normal_delegate(asio::io_service & service);
+  normal_delegate(asio::io_service & service, optional<proxy_type> const & proxy = optional<proxy_type>());
 
   virtual void connect(asio::ip::tcp::endpoint & endpoint,
                        function<void(system::error_code const &)> handler);
@@ -27,6 +27,7 @@ struct normal_delegate : connection_delegate {
  private:
   asio::io_service & service_;
   scoped_ptr<asio::ip::tcp::socket> socket_;
+  optional<proxy_type> proxy_;
 
   normal_delegate(normal_delegate const &);  // = delete
   normal_delegate& operator=(normal_delegate);  // = delete

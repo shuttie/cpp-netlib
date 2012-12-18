@@ -76,15 +76,24 @@ namespace boost { namespace network { namespace http { namespace impl {
       virtual response start(request const & request,
                              string_type const & method,
                              bool get_body,
-                             body_callback_function_type callback) {
+                             body_callback_function_type callback,
+                             optional<proxy_type> const & proxy = optional<proxy_type>()) {
         response response_;
         this->init_response(response_, get_body);
+        std::string host_;
+        boost::uint16_t port_;
+        if (proxy) {
+            host_ = proxy->host();
+            port_ = proxy->port();
+        } else {
+            host_ = host(request);
+            port_ = port(request);
+        }
         linearize(request, method, version_major, version_minor,
-          std::ostreambuf_iterator<typename char_<Tag>::type>(&command_streambuf));
+          std::ostreambuf_iterator<typename char_<Tag>::type>(&command_streambuf), proxy);
         this->method = method;
-        boost::uint16_t port_ = port(request);
         resolve_(resolver_,
-                 host(request),
+                 host_,
                  port_,
                  request_strand_.wrap(
                      boost::bind(&this_type::handle_resolved,

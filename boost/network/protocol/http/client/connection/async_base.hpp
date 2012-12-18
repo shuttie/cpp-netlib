@@ -37,7 +37,8 @@ namespace boost { namespace network { namespace http { namespace impl {
         bool follow_redirect,
         bool https,
         optional<string_type> certificate_filename=optional<string_type>(),
-        optional<string_type> const & verify_path=optional<string_type>()) {
+        optional<string_type> const & verify_path=optional<string_type>(),
+        optional<proxy_type> const & proxy = optional<proxy_type>()) {
       typedef http_async_connection<Tag,version_major,version_minor>
           async_connection;
       typedef typename delegate_factory<Tag>::type delegate_factory_type;
@@ -51,7 +52,8 @@ namespace boost { namespace network { namespace http { namespace impl {
                   resolver.get_io_service(),
                   https,
                   certificate_filename,
-                  verify_path)));
+                  verify_path,
+                  proxy)));
       BOOST_ASSERT(temp.get() != 0);
       return temp;
     }
@@ -61,7 +63,8 @@ namespace boost { namespace network { namespace http { namespace impl {
         request const & request,
         string_type const & method,
         bool get_body,
-        body_callback_function_type callback) = 0;
+        body_callback_function_type callback,
+        optional<proxy_type> const & proxy = optional<proxy_type>()) = 0;
 
     virtual ~async_connection_base() {}
 
