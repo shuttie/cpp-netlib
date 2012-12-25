@@ -267,11 +267,12 @@ namespace network { namespace http {
           socket().async_read_some(
               boost::asio::buffer(read_buffer_)
               , strand.wrap(
-                  boost::bind(
+                  std::bind(
                       &async_server_connection::wrap_read_handler
-                      , async_server_connection::shared_from_this()
+                      , std::ref(*async_server_connection::shared_from_this())
                       , callback
-                      , boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)));
+                      , std::placeholders::_1
+                      , std::placeholders::_2)));
       }
 
       boost::asio::ip::tcp::socket & socket()    { return socket_;               }
@@ -342,12 +343,12 @@ namespace network { namespace http {
           socket_.async_read_some(
               boost::asio::buffer(read_buffer_)
               , strand.wrap(
-                  boost::bind(
+                  std::bind(
                       &async_server_connection::handle_read_data,
-                      async_server_connection::shared_from_this(),
+                      std::ref(*async_server_connection::shared_from_this()),
                       state,
-                      boost::asio::placeholders::error,
-                      boost::asio::placeholders::bytes_transferred
+                      std::placeholders::_1,
+                      std::placeholders::_2
                       )
                   )
               );
@@ -486,11 +487,11 @@ namespace network { namespace http {
               socket()
               , boost::asio::buffer(bad_request, strlen(bad_request))
               , strand.wrap(
-                  boost::bind(
+                  std::bind(
                       &async_server_connection::client_error_sent
-                      , async_server_connection::shared_from_this()
-                      , boost::asio::placeholders::error
-                      , boost::asio::placeholders::bytes_transferred)));
+                      , std::ref(*async_server_connection::shared_from_this())
+                      , std::placeholders::_1
+                      , std::placeholders::_2)));
       }
 
       void client_error_sent(boost::system::error_code const & ec, std::size_t bytes_transferred) {
@@ -512,12 +513,12 @@ namespace network { namespace http {
               socket()
               , headers_buffer
               , strand.wrap(
-                  boost::bind(
+                  std::bind(
                       &async_server_connection::handle_write_headers
-                      , async_server_connection::shared_from_this()
+                      , std::ref(*async_server_connection::shared_from_this())
                       , callback
-                      , boost::asio::placeholders::error
-                      , boost::asio::placeholders::bytes_transferred)));
+                      , std::placeholders::_1
+                      , std::placeholders::_2)));
       }
 
       void handle_write_headers(std::function<void()> callback, boost::system::error_code const & ec, std::size_t bytes_transferred) {
@@ -630,14 +631,14 @@ namespace network { namespace http {
           boost::asio::async_write(
                socket_
               ,seq
-              ,boost::bind(
+              ,std::bind(
                   &async_server_connection::handle_write
-                  ,async_server_connection::shared_from_this()
+                  ,std::ref(*async_server_connection::shared_from_this())
                   ,callback_function
                   ,temporaries
                   ,buffers
-                  ,boost::asio::placeholders::error
-                  ,boost::asio::placeholders::bytes_transferred)
+                  ,std::placeholders::_1
+                  ,std::placeholders::_2)
           );
       }
   };
