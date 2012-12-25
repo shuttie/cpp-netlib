@@ -50,8 +50,8 @@ BOOST_AUTO_TEST_CASE(request_storage_flow) {
   BOOST_CHECK_EQUAL(bytes_read, sizeof(data));
   std::string flattened;
   simple.flatten(flattened);
-  BOOST_CHECK_EQUAL(flattened, std::string(output, sizeof(data)));
-  BOOST_CHECK_EQUAL(std::string(data, sizeof(data)), std::string(output, sizeof(data)));
+  BOOST_CHECK_EQUAL(flattened, output);
+  BOOST_CHECK_EQUAL(std::string(data, sizeof(data)), output);
   simple.clear();
 }
 
@@ -66,8 +66,8 @@ BOOST_AUTO_TEST_CASE(request_storage_copy) {
   BOOST_CHECK_EQUAL(bytes_read, sizeof(quick_brown));
   std::string flattened;
   copy.flatten(flattened);
-  BOOST_CHECK_EQUAL(flattened, std::string(output, sizeof(quick_brown)));
-  BOOST_CHECK_EQUAL(std::string(quick_brown, sizeof(quick_brown)), std::string(output, sizeof(quick_brown)));
+  BOOST_CHECK_EQUAL(flattened, output);
+  BOOST_CHECK_EQUAL(std::string(quick_brown, sizeof(quick_brown)), output);
   copy.clear();
   flattened.clear();
   original.flatten(flattened);
